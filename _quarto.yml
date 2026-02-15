@@ -3,7 +3,7 @@ project:
   output-dir: docs
   
 website:
-  title: "quarto_site_webscrap"
+  title: "The Green Premium: A Web-Scraping and Monte Carlo Analysis of Agroecological Prices in Mexico City"
   navbar:
     left:
       - href: index.qmd
