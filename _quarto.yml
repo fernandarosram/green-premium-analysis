@@ -1,0 +1,22 @@
+project:
+  type: website
+  output-dir: docs
+  
+website:
+  title: "quarto_site_webscrap"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+editor: visual
+

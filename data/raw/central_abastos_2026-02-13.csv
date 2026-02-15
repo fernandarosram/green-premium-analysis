@@ -1,0 +1,74 @@
+product_name,unit_raw,price_freq,price_min,price_max,unit,quantity,price_freq_per_unit,price_min_per_unit,price_max_per_unit,date,seller
+Aguacate Hass,Caja de 9 kg.,35.56,33.33,38.89,kg,1,35.56,33.33,38.89,2026-02-13,central_abastos
+Fresa,Caja de 8 kg.,37.5,33.75,40,kg,1,37.5,33.75,40,2026-02-13,central_abastos
+Limón c/semilla # 3,Arpilla de 19 kg.,17.37,15.79,18.95,kg,1,17.37,15.79,18.95,2026-02-13,central_abastos
+Limón c/semilla # 4,Arpilla de 19 kg.,29.47,28.95,30.53,kg,1,29.47,28.95,30.53,2026-02-13,central_abastos
+Limón c/semilla # 5,Caja de 20 kg.,31.5,30,32.5,kg,1,31.5,30,32.5,2026-02-13,central_abastos
+Limón s/semilla,Kilogramo,23,22,26,kg,1,23,22,26,2026-02-13,central_abastos
+Manzana Golden Delicious,Caja de 19 kg.,37.89,36.84,39.47,kg,1,37.89,36.84,39.47,2026-02-13,central_abastos
+Manzana Golden Delicious,Caja de 17 kg.,55.88,52.94,58.82,kg,1,55.88,52.94,58.82,2026-02-13,central_abastos
+Manzana Red Delicious,Caja de 19 kg.,33.16,31.58,34.21,kg,1,33.16,31.58,34.21,2026-02-13,central_abastos
+Manzana Red Delicious,Caja de 17 kg.,50,47.06,52.94,kg,1,50,47.06,52.94,2026-02-13,central_abastos
+Naranja Valencia chica,Kilogramo,9.5,8.8,10,kg,1,9.5,8.8,10,2026-02-13,central_abastos
+Naranja Valencia grande,Kilogramo,15.8,15,16.5,kg,1,15.8,15,16.5,2026-02-13,central_abastos
+Naranja Valencia mediana,Kilogramo,11.5,11,12.5,kg,1,11.5,11,12.5,2026-02-13,central_abastos
+Papaya Maradol,Kilogramo,27,25,37,kg,1,27,25,37,2026-02-13,central_abastos
+Piña grande,Pieza,33,30,35,pza,1,33,30,35,2026-02-13,central_abastos
+Piña mediana,Pieza,23,20,25,pza,1,23,20,25,2026-02-13,central_abastos
+Plátano Chiapas,Caja de 18 kg.,15.56,15,16.11,kg,1,15.56,15,16.11,2026-02-13,central_abastos
+Plátano Chiapas calidad exportación,Caja de 18 kg.,17.78,17.22,18.89,kg,1,17.78,17.22,18.89,2026-02-13,central_abastos
+Plátano Dominico,Caja de 18 kg.,26.67,26.11,27.78,kg,1,26.67,26.11,27.78,2026-02-13,central_abastos
+Plátano Macho,Kilogramo,15,14,17,kg,1,15,14,17,2026-02-13,central_abastos
+Plátano Tabasco,Caja de 18 kg.,12.78,12.22,13.33,kg,1,12.78,12.22,13.33,2026-02-13,central_abastos
+Toronja Roja,Kilogramo,12,11.5,12.5,kg,1,12,11.5,12.5,2026-02-13,central_abastos
+Guayaba,Caja de 8 kg.,28.75,26.25,38.75,kg,1,28.75,26.25,38.75,2026-02-13,central_abastos
+Mandarina,Kilogramo,25,20,30,kg,1,25,20,30,2026-02-13,central_abastos
+Mango Manila,Caja de 28 kg.,26.79,25,28.57,kg,1,26.79,25,28.57,2026-02-13,central_abastos
+Mango Manililla,Caja de 28 kg.,11.43,10.71,12.14,kg,1,11.43,10.71,12.14,2026-02-13,central_abastos
+Mango Oro,Caja de 28 kg.,11.43,10.71,12.14,kg,1,11.43,10.71,12.14,2026-02-13,central_abastos
+Pera D´anjou # 100,Caja de 18 kg.,40,38.89,41.67,kg,1,40,38.89,41.67,2026-02-13,central_abastos
+Uva Globo,Caja de 8 kg.,37.5,35,43.75,kg,1,37.5,35,43.75,2026-02-13,central_abastos
+Uva sin semilla,Caja de 8 kg.,62.5,62.5,81.25,kg,1,62.5,62.5,81.25,2026-02-13,central_abastos
+Acelga,Manojo de 5 kg.,14,12,16,kg,1,14,12,16,2026-02-13,central_abastos
+Ajo Morado,Caja de 10 kg.,69,68,71,kg,1,69,68,71,2026-02-13,central_abastos
+Apio,Manojo de 8 kg.,6.88,6.25,7.5,kg,1,6.88,6.25,7.5,2026-02-13,central_abastos
+Brócoli,Kilogramo,20,18,22,kg,1,20,18,22,2026-02-13,central_abastos
+Cacahuate,Kilogramo,58,56,60,kg,1,58,56,60,2026-02-13,central_abastos
+Calabacita Italiana,Caja de 25 kg.,8.4,8,10,kg,1,8.4,8,10,2026-02-13,central_abastos
+cebolla blanca,Arpilla de 30 kg.,5,4.5,6,kg,1,5,4.5,6,2026-02-13,central_abastos
+Cebolla de rabo,Manojo de 5 kg.,16,14,18,kg,1,16,14,18,2026-02-13,central_abastos
+Cilantro,Manojo de 5 kg.,16,14,18,kg,1,16,14,18,2026-02-13,central_abastos
+Col mediana,Docena,28,25,30,pza,1,28,25,30,2026-02-13,central_abastos
+Coliflor mediana,Docena,28,25,30,pza,1,28,25,30,2026-02-13,central_abastos
+Chayote sin espinas,Caja de 18 kg.,13.89,12.78,15,kg,1,13.89,12.78,15,2026-02-13,central_abastos
+Chícharo arrugado,Costal de 70 kg.,25,25,30,kg,1,25,25,30,2026-02-13,central_abastos
+Chile de Árbol fresco,Arpilla de 30 kg.,80,75,85,kg,1,80,75,85,2026-02-13,central_abastos
+Chile Jalapeño,Arpilla de 30 kg.,17,14,24,kg,1,17,14,24,2026-02-13,central_abastos
+Chile Pimiento morrón,Caja de 12 kg.,27.5,26.67,29.17,kg,1,27.5,26.67,29.17,2026-02-13,central_abastos
+Chile Poblano,Arpilla de 20 kg.,19,18,26,kg,1,19,18,26,2026-02-13,central_abastos
+Chile Serrano,Arpilla de 30 kg.,13,11,20,kg,1,13,11,20,2026-02-13,central_abastos
+Ejote redondo,Costal de 70 kg.,30,30,35,kg,1,30,30,35,2026-02-13,central_abastos
+Elote grande,Docena,6.67,5.83,7.5,pza,1,6.67,5.83,7.5,2026-02-13,central_abastos
+Epazote,Manojo de 5 kg.,16,14,18,kg,1,16,14,18,2026-02-13,central_abastos
+Espinaca,Manojo de 5 kg.,18,16,22,kg,1,18,16,22,2026-02-13,central_abastos
+Jícama,Arpilla de 20 kg.,11,10,12,kg,1,11,10,12,2026-02-13,central_abastos
+Lechuga Romanita grande,Docena,8.33,7.5,9.17,pza,1,8.33,7.5,9.17,2026-02-13,central_abastos
+Melón Cantaloupe # 27,Caja de 38 kg.,14.47,14.47,15.79,kg,1,14.47,14.47,15.79,2026-02-13,central_abastos
+Melon Cantaloupe # 36,Caja de 38 kg.,13.16,11.84,13.16,kg,1,13.16,11.84,13.16,2026-02-13,central_abastos
+Nopal grande,Ciento,1.2,1.1,1.3,pza,1,1.2,1.1,1.3,2026-02-13,central_abastos
+Papa Alpha,Arpilla de 50 kg.,12,11,14,kg,1,12,11,14,2026-02-13,central_abastos
+Pepino,Caja de 25 kg.,14.4,14,15.2,kg,1,14.4,14,15.2,2026-02-13,central_abastos
+Sandía Sangría,Kilogramo,13,12,14,kg,1,13,12,14,2026-02-13,central_abastos
+Tomate Bola,Caja de 10 kg.,31,30,33,kg,1,31,30,33,2026-02-13,central_abastos
+Tomate Saladette,Caja de 12 kg.,25.83,24.17,28.33,kg,1,25.83,24.17,28.33,2026-02-13,central_abastos
+Tomate Saladette,Caja de 13 kg.,14.62,13.85,16.92,kg,1,14.62,13.85,16.92,2026-02-13,central_abastos
+Tomate Saladette,Caja de 25 kg.,18.8,18,20,kg,1,18.8,18,20,2026-02-13,central_abastos
+Tomate Verde,Kilogramo,26,23,28,kg,1,26,23,28,2026-02-13,central_abastos
+Zanahoria leña,Arpilla de 25 kg.,4.4,4,5.2,kg,1,4.4,4,5.2,2026-02-13,central_abastos
+Zanahoria mediana,Arpilla de 24 kg.,8.33,7.92,8.75,kg,1,8.33,7.92,8.75,2026-02-13,central_abastos
+Zanahoria mediana,Arpilla de 25 kg.,6.4,6,6.4,kg,1,6.4,6,6.4,2026-02-13,central_abastos
+Zanahoria polvo,Arpilla de 25 kg.,4.4,4,5.2,kg,1,4.4,4,5.2,2026-02-13,central_abastos
+Chile ancho,Kilogramo,130,125,135,kg,1,130,125,135,2026-02-13,central_abastos
+Chile de Árbol seco,Kilogramo,165,160,170,kg,1,165,160,170,2026-02-13,central_abastos
+Chile Guajillo,Kilogramo,110,105,115,kg,1,110,105,115,2026-02-13,central_abastos
+Chile Pasilla,Kilogramo,185,180,190,kg,1,185,180,190,2026-02-13,central_abastos

@@ -1,0 +1,416 @@
+---
+title: "Market Data Analysis"
+format: 
+  html:
+    toc: true                
+    toc-depth: 3             
+    toc-location: left      
+    number-sections: true
+editor: visual
+---
+
+# Introduction
+
+Agroecology is a movement to transform food systems in pursuit of environmental, social, gender, economic, racial, and intergenerational justice.
+
+While the principles of agroecology offer a roadmap for a more resilient future, the transition from theory to the kitchen table is often dictated by a single factor: **economic accessibility**. In a megalopolis like Mexico City, where the industrial food chain and ancestral agricultural systems like the *Chinampas* coexist, the price tag often determines which food system a family can afford. This report looks at whether the “Green Premium” on sustainable agriculture is really out of reach for the average consumer, or just a gap that that can realistically be bridged.
+
+# Objectives
+
+In this report, I leverage **web scraping** and **stochastic modeling** to adress three key questions:
+
+1.  **Price Volatility**: Which market tier exhibits the greatest price variability?
+
+2.  **Green Premium**: What is the median percentage difference between agroecological and conventional products?
+
+3.  **Labor Cost Translation**: How many days of minimum-wage labor are required to afford a monthly basic basket in each market tier?
+
+# Methodology
+
+## Data Collection
+
+To analyze the price accessibility of sustainable food systems, I developed a multi-source web scraping pipeline to extract and standardize pricing data from three distinct market tiers in Mexico City:
+
+1.  **Conventional Retail Tier (Industrial Supermarkets)**
+
+Primary sources: [Walmart](https://www.walmart.com.mx/) and [La Comer](https://www.lacomer.com.mx/). These represent the dominant retail landscape for the average citizen. They were selected due to their high geographic density and standardized pricing, serving as the "baseline" for food accessibility and industrial supply chains.
+
+2.  **Sustainable and Short Supply-Chain Markets**
+
+Primary sources: [Dilmun](https://dilmun.mx/), [Mercado Alternativo](https://mercadoalternativo.org/), [Consuma Conciencia](https://consumaconciencia.com/) and [El Buen Campo](https://www.elbuencampo.com/). These specialized vendors focus on **agroecological products**, primarily sourced from the ancestral *chinampa* system. These markets prioritize organic practices, fair trade, and sustainability.
+
+3.  **The Wholesale Foundation (Central de Abasto Proxy)**
+
+Source: [Central de Abasto](https://www.economia-sniim.gob.mx/) (CEDA). As the world’s largest wholesale market, the CEDA is the heart of Mexico’s food supply. Since most street market vendors and neighborhood greengrocers source their inventory directly from here, I utilized CEDA’s frequent, minimum, and maximum price points to build a stochastic proxy for local market prices. This allows the study to account for the proximity price tier that is otherwise difficult to capture via standard scraping.
+
+## Technical Rationale
+
+For this project, I chose **R** as the core analytical engine. While many languages offer scraping capabilities, R’s ecosystem provides a seamless bridge between **automated data extraction**, **complex statistical modeling**, and **high-fidelity reporting** through Quarto.
+
+-   **Chromote**: Used to interact with JavaScript-rendered retail platforms (e.g., React-based sites) and extract dynamically generated product data.
+
+-   **Rvest**: For markets with more traditional, server-side rendered architectures, I integrated rvest. This allowed for high-speed, efficient parsing of HTML structures, optimizing the data collection process without putting unnecessary load on the servers.
+
+-   **Tidyverse**: Enabled a transparent, modular data cleaning pipeline across heterogeneous data sources
+
+Below are snippets of the core scraping logic, demonstrating the different approaches required for different site architectures.
+
+```{r}
+#| label: show-scraper-logic
+#| file: "../scripts/01_scraper_supermarket.R"
+#| eval: false
+#| code-fold: true
+#| code-summary: "Click to see the Chromote Scraper Logic (01_scraper_supermarket.R)"
+```
+
+-   **Monte Carlo Simulation**: Used to model price variability from wholesale data and generate probabilistic proxies for informal market prices
+
+```{r}
+#| label: show-simulation-logic
+#| file: "../scripts/04_local_price_simulator.R"
+#| eval: false
+#| code-fold: true
+#| code-summary: "Click to see stochastic modeling to obtain street market price proxies (04_local_price_simulator.R)"
+```
+
+## Data Refinement
+
+### Unit Standardization and Price Normalization
+
+Raw data from websites is inherently messy. A product could be listed as "1 kg," "1k," "1000 g," or even as a single unit like "1 pieza." To be able to compare, I created modular cleaning functions (stored in `00_helpers.R`) tailored to each data source's quirks. The core task was to extract the numeric quantity and unit, then convert all prices to a standard metric: **Price per Kilogram (\$/kg)**.
+
+```{r}
+#| label: load-data-chunks
+#| include: false
+knitr::read_chunk("../scripts/00_helpers.R")
+knitr::read_chunk("../scripts/05_clean_data.R")
+```
+
+```{r}
+#| label: dilmun-function
+#| eval: false
+#| code-fold: true
+#| code-summary: "Click to see the cleaning function for 'Dilmun' products (00_helpers. R)"
+```
+
+I applied the following normalization formula:
+
+\$\$Price\_{kg} = \\frac{Price\_{total}}{Quantity\_{total}} \\times Factor\$\$
+
+**Where:**
+
+-   $Price_{total}$: The price listed on the website.
+
+-   $Quantity_{total}$: The numeric value of the weight or volume extracted.
+
+-   $Factor$: A conversion coefficient (e.g., $1000$ for grams, $1$ for kilograms) to ensure the final output is consistently represented in kilograms.
+
+```{r}
+#| label: price-normalization
+#| eval: false
+#| code-fold: true
+#| code-summary: "Click to see the code employed for price normalizations (05_clean_data.R)"
+```
+
+### Product Selection & Scope: The Basic Basket
+
+To ensure the study reflects the real-world economic pressures faced by Mexico City residents, I focused the analysis on fruits and vegetable from the **Basic Basket** (Basic Food Basket).
+
+After selecting these products, web scraping returns "false positives." I implemented a secondary filtering layer using Regular Expressions (Regex) to remove items that match the product names but do not belong in a food basket (e.g., "flor de zanahoria", "disfraz de jitomate", or processed teas).
+
+```{r}
+#| label: filter-selected-products
+#| eval: false
+#| code-fold: true
+#| code-summary: "Click to see the code for filtering and removing noise from names of selected products (05_clean_data.R)"
+```
+
+## Stochastic Modeling
+
+To approximate informal market prices derived from wholesale data, I implemented a Monte Carlo-style simulation using observed minimum, frequent, and maximum prices from Central de Abasto.
+
+Each simulation sampled within these bounds to generate a distribution of plausible retail prices, allowing estimation of expected value and variance rather than relying on a single point estimate.
+
+## Price Volatility
+
+I estimated the volatility for selected product through the Coefficient of Variation ($CV = \frac{\sigma}{\mu} \times 100$). This measure quantifies how spread out data points are relative to the mean, allowing for the comparison of variability between datasets with different units or scales. In this study, CV allows us to compare price volatility across tiers regardless of the average price point. A higher CV indicates greater price instability.
+
+## The Price Gap
+
+To quantify the economic barrier to accessing sustainable food from agroecologic markets, I calculated the Price Gap. This metric represents the percentage increase a consumer pays when switching from an industrial or informal option to an agroecological one.
+
+I compared the median price of each product to avoid the skewing effect of outliers. The gap is calculated as:
+
+$$\text{Gap (%)} = \left( \frac{\text{Price}_{Agro} - \text{Price}_{Baseline}}{\text{Price}_{Baseline}} \right) \times 100$$
+
+## Economic Viability (**Labor Cost Translation)**
+
+To assess the economic accessibility to the different food systems, I constructed a Monthly Basic Basket simulation. I integrated a monthly consumption dataset ('monthly_consumption.csv') which has an estimation of the typical quantity (kg) of each product consumed by a household in a month. The monthly cost per product group ($C_{m}$) was calculated as:
+
+$$C_{m} = \bar{P} \times Q_{m}$$
+
+Where $\bar{P}$ is the mean price per unit and $Q_{m}$ is the monthly consumption quantity.
+
+To measure "Affordability" the total basket cost was benchmarked against the 2026 Mexican Daily Minimum Wage (\$315.04 MXN). I calculated two primary indicators:
+
+1.  Wage Percentage. The portion of a total monthly minimum wage (30 days) required to cover the basket.
+
+2.  Work Days. The specific number of full labor days needed to afford these essential fruits and vegetables.
+
+# Results
+
+```{r}
+#| label: analysis-setup
+#| include: false
+#| warning: false
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(kableExtra)
+
+# Load the clean data generated by script 05_clean_data.R
+selected_products <- rio::import("../data/processed/selected_products_2026-02-13.csv")
+# Load data of monthly product consumption
+month_cons <- rio::import("../data/monthly_consumption.csv")
+```
+
+## Price Distributions and Volatility
+
+The density plot below visualizes the distribution of prices (\$/kg) for all products within each tier. The x-axis is on a logarithmic scale, which allows us to see the spread of lower-priced staples while still encompassing the higher-end premium products.
+
+```{r}
+#| label: fig-density
+#| fig-cap: "Price Density per Market Tier (Log Scale)"
+#| echo: false
+#| warning: false
+
+ggplot(selected_products, aes(x = price_per_unit, fill = tier)) +
+  geom_density(alpha = 0.5) +
+  scale_x_log10(labels = scales::dollar_format(prefix = "$", suffix = " MXN")) +
+  theme_minimal() +
+  scale_fill_viridis_d(option = "viridis", labels = c("Agroecological", "Local", "Supermarket")) +
+  labs(
+    title = "Market Price Distributions",
+    x = "Price per Kilogram",
+    y = "Density",
+    fill = "Tier"
+  ) + theme(legend.position = "top")
+```
+
+```{r}
+#| label: stats-analysis
+#| echo: false
+#| warning: false
+
+summary_stats <- selected_products |> 
+  group_by(tier) |> 
+  summarise(
+    Min = min(price_per_unit, na.rm = TRUE),
+    Median = median(price_per_unit, na.rm = TRUE),
+    Mean = mean(price_per_unit, na.rm = TRUE),
+    Max = max(price_per_unit, na.rm = TRUE),
+    SD = sd(price_per_unit, na.rm = TRUE),
+    CV = (SD / Mean) * 100
+  ) |> 
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+The summary table below confirms what the density plot suggests. While the **Local** tier offers the lowest entry price and the lowest median price, the **Supermarket** tier exhibits the highest price volatility, with a Coefficient of Variation (CV) of **`r summary_stats[summary_stats$tier == "supermarket", "CV"]`**. This high CV likely reflects the supermarket strategy of offering a wide spectrum of goods leading staples to high-margin, "gourmet" or organic options. This creates a highly variable price landscape for the consumer.
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-summ-stats
+kable(summary_stats, col.names = c("Market Tier", "Min", "Median", "Mean", "Max", "SD", "CV (%)")) |>
+  kable_styling(full_width = FALSE, position = "center")
+```
+
+## Quantifying the "Green Premium"
+
+```{r}
+#| label: price-gap-analysis
+#| echo: false
+#| warning: false
+library(dplyr)
+library(tidyr)
+library(knitr)
+price_gaps <- selected_products |>
+  group_by(product_group, tier) |>
+  summarise(median_price = median(price_per_unit, na.rm = TRUE)) |>
+  pivot_wider(names_from = tier, values_from = median_price) |>
+  mutate(
+    agro_vs_super = (agroecological - supermarket) / supermarket *100,
+    agro_vs_local = (agroecological - local) / local * 100
+    ) |> 
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+
+
+gap_summary <- price_gaps |> 
+  ungroup() |>
+  summarise(
+    avg_premium_vs_super = mean(agro_vs_super, na.rm = TRUE),
+    avg_premium_vs_local = mean(agro_vs_local, na.rm = TRUE)) |>
+ mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+The price gap analysis puts a number on the cost of choosing agroecological options.
+
+On average, purchasing the fruits and vegetables from the Basic Basket from an agroecological market represents a **`r round(gap_summary$avg_premium_vs_super, 1)`%** increase in cost compared to supermarkets, and a **`r round(gap_summary$avg_premium_vs_local)`%** increase compared to local street markets.
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: tbl-gap-summ
+kable(gap_summary, col.names = c("Agroecological vs. Supermarket Gap", "Agroecological vs. Local Gap"))
+```
+
+The following dumbbell plot visualizes these gaps for individual products. Each product is a line connecting its price in the local and supermarket tiers to its price in the agroecological tier. This highlights that while agroecology is almost universally more expensive, the magnitude of the gap varies wildly by product.
+
+```{r}
+#| label: fig-price-gap
+#| fig-cap: "Price Gaps. Graph shows the distance between Local, Supermarket, and Agroecological prices."
+#| echo: false
+#| warning: false
+
+price_gaps_long <- price_gaps |>
+  select(product_group, agroecological, supermarket, local) |>
+  pivot_longer(cols = c(agroecological, supermarket, local), 
+               names_to = "tier", values_to = "price")
+
+ggplot(price_gaps_long, aes(x = price, y = reorder(product_group, price))) +
+  geom_line(aes(group = product_group), size = 1) +
+  geom_point(aes(color = tier), size = 3.5) +
+  scale_color_brewer(palette = "viridis", labels = c("Agroecological", "Local", "Supermarket")) +
+  theme_minimal() +
+  labs(
+    title = "Product Price Gaps",
+    x = "Median Price per Kg ($ MXN)", 
+    y = NULL, 
+    color = "Market Tier"
+  ) +
+  theme(legend.position = "top")
+```
+
+::: {.callout-note collapse="true"}
+### Price Gap of Selected Products Table (Click to expand)
+
+```{r}
+#| label: price-gap_table
+#| echo: false
+#| warning: false
+
+kable(price_gaps,
+      caption = "The following table shows the price gap by product. Negative values indicate products that are cheaper in agroecological tier",
+      col.names = c("Product", "Agroecological price", "Local price", "Supermarket price", "Agroecological vs Supermarket Gap", "Agroecological vs Local Markets Gap"))
+```
+:::
+
+## Economic Viability
+
+To improve interpretability, prices were translated into labor-equivalent terms by benchmarking basket costs against the 2026 Mexican daily minimum wage (315.04 MXN).
+
+### Basic Basket cost
+
+```{r}
+#| label: eco-viability-analysis
+#| echo: false
+
+basket_cost <- selected_products |>
+left_join(month_cons, by = "product_group") |>
+group_by(tier, product_group) |>
+summarise(
+avrg_product_cost = mean(price_per_unit, na.rm = TRUE),
+monthly_consum = first(monthly_consum),
+monthly_cost = avrg_product_cost * monthly_consum,
+.groups = "drop_last"
+) |>
+mutate(
+basket_prop = monthly_cost/sum(monthly_cost, na.rm = TRUE)*100
+) |> 
+ungroup()
+
+
+basket_summ <- basket_cost |>
+group_by(tier) |>
+summarise(monthly_total_cost = sum(monthly_cost),
+.groups = "drop") |> 
+mutate(across(where(is.numeric), \(x) round(x, 2)))
+
+
+min_wage <- 315.04
+
+min_wage_analysis <- basket_summ |>
+mutate(
+wg_perc = (monthly_total_cost / (min_wage * 30)) *100,
+work_days = monthly_total_cost / min_wage,
+across(where(is.numeric), \(x) round(x, 2))
+)
+```
+
+The local market emerges as the most economically accessible option, with a monthly basket costing **$`r basket_summ[basket_summ$tier == "local", "monthly_total_cost"]`MXN**. The supermarket basket is slightly more expensive at **$`r basket_summ[basket_summ$tier == "supermarket", "monthly_total_cost"]` MXN**. However, the agroecological basket commands a significant premium at **$`r basket_summ[basket_summ$tier == "agroecological", "monthly_total_cost"]` MXN**.
+
+```{r}
+#| label: fig-basket-visual
+#| echo: false
+#| fig-cap: "Monthly total basket cost among tiers"
+    ggplot(basket_summ, aes(x = tier, y = monthly_total_cost, fill = tier)) + 
+      geom_col() +
+      geom_text(aes(label = paste0("$", monthly_total_cost),  size = 5, vjust = -0.5)) +
+      labs(
+        title = "Monthly cost of fruits and vegetables of basic basket", x = "Tier", y = "Monthly Cost") +
+      scale_x_discrete(labels = c("Agroecological", "Local", "Supermarket")) +
+      theme_minimal() + scale_fill_viridis_d(option = "viridis") + 
+      theme(legend.position = "none")
+```
+
+The results highlight a clear disparity in how each market tier impacts the purchasing power of minimum-wage workers:
+
+-   **Local Market**: TThe most economically accessible option, requiring approximately **`r min_wage_analysis[min_wage_analysis$tier == "local", "work_days"]` days of work per month** to afford the basket.
+
+-   **Supermarket**: A moderately higher burden, equivalent to **`r min_wage_analysis[min_wage_analysis$tier == "supermarket", "work_days"]` days of work**.
+
+-   **Agroecological Market**: The highest labor cost, requiring **`r min_wage_analysis[min_wage_analysis$tier == "agroecological", "work_days"]` days of work** to purchase the same set of fruits and vegetables.
+
+In practical terms, choosing the agroecological option more than doubles the labor required compared to local markets, illustrating how price differentials translate directly into meaningful differences in economic accessibility.
+
+```{r}
+#| label: min-wage-tbl
+#| echo: false
+kable(min_wage_analysis[ ,c(1,3,4)], col.names = c("Tier", "Percentage of Minimum Monthly Wage", "Work Days"))
+```
+
+```{r}
+#| label: fig-basket
+#| fig-cap: "Product contribution to basic basket cost"
+#| echo: false
+#| fig-width: 8
+#| fig-height: 10
+ ggplot(basket_cost,  aes(x = reorder(product_group, monthly_cost), y = monthly_cost, fill = tier)) +
+      geom_col(position = "dodge") +
+      coord_flip() +
+      labs(title = "Product contribution to monthly cost of the basic basket", x = "Monthly product cost", y = "") +
+      theme_minimal() + scale_fill_viridis_d(option = "viridis") + 
+      facet_wrap(~tier, ncol = 1, labeller = as_labeller(c(agroecological = "Agroecologic", 
+                                       local = "Local", 
+                                       supermarket = "Supermarket"))) + 
+      theme(legend.position = "none",  axis.text.y = element_text(size = 10))
+```
+
+# Limitations
+
+-   Web-scraped prices may change daily.
+-   Product equivalence across tiers may not be perfect (quality differences).
+-   Central de Abasto proxy assumes wholesale-to-retail price behavior.
+-   Only fruits and vegetables were analyzed.
+
+# Conclusion
+
+This analysis confirms the presence of a measurable Green Premium in Mexico City's food system. Agroecological products are consistently more expensive, and the associated labor cost burden is significantly higher for minimum-wage households.
+
+However, price variability within supermarket tiers reveals structural heterogeneity in industrial retail markets. Meanwhile, local market proxies demonstrate comparatively lower and more stable prices.
+
+From a data perspective, the findings illustrate how price dispersion, supply chain structure, and income constraints interact to shape food accessibility.
+
+Bridging the economic gap in sustainable food systems will likely require structural interventions beyond individual consumer choice.
